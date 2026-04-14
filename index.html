@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KINETIC VENUE | Smart Stadium Control</title>
+    <meta name="description" content="Predictive crowd mapping and micro-incentive engine for stadium management.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Ionicons for Icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --surface-color: rgba(31, 40, 51, 0.7);
+            --border-color: rgba(102, 252, 241, 0.2);
+            --accent-primary: #66fcf1;
+            --accent-secondary: #45a29e;
+            --text-main: #c5c6c7;
+            --text-heading: #ffffff;
+            --danger: #ff4c4c;
+            --warning: #f1c40f;
+            --success: #2ecc71;
+            
+            --glass-blur: blur(15px);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #171c28 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Abstract Background Elements */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+        }
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-secondary);
+            top: -100px;
+            left: -100px;
+            animation: float 10s ease-in-out infinite;
+        }
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(102, 252, 241, 0.4);
+            bottom: -50px;
+            right: -50px;
+            animation: float 12s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 40px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 12, 16, 0.8);
+            backdrop-filter: var(--glass-blur);
+        }
+        header h1 {
+            margin: 0;
+            color: var(--accent-primary);
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* Main Layout */
+        main {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            padding: 40px 48px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+
+        .glass-panel {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .glass-panel:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 252, 241, 0.5);
+        }
+
+        h2 {
+            color: var(--text-heading);
+            font-weight: 600;
+            margin-top: 0;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Crowd Map UI */
+        .map-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .gates-overview {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .gate-card {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        .gate-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, rgba(102,252,241,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .gate-card:hover::before { opacity: 1; }
+
+        .gate-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+        .density-meter {
+            height: 10px;
+            background: #2a2a2a;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .density-fill {
+            height: 100%;
+            width: 30%;
+            background: var(--success);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s ease;
+        }
+        .density-label {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--success);
+        }
+        
+        .pulse {
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 76, 76, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 76, 76, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 76, 76, 0); }
+        }
+
+        /* Incentives & Queue Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .notification {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 16px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.5s ease-out;
+        }
+        .notification.alert {
+            background: rgba(255, 76, 76, 0.1);
+            border-left-color: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Virtual Queue */
+        .queue-widget {
+            text-align: center;
+        }
+        .btn {
+            background: transparent;
+            border: 2px solid var(--accent-primary);
+            color: var(--accent-primary);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            background: var(--accent-primary);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--accent-primary);
+        }
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background: #fff;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            display: none;
+            overflow: hidden;
+        }
+        .qr-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+
+        @media (max-width: 900px) {
+            main { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <header>
+        <h1><ion-icon name="pulse"></ion-icon> KINETIC VENUE</h1>
+        <div style="font-size: 14px; opacity: 0.8; display:flex; align-items:center; gap:8px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--success);box-shadow:0 0 5px var(--success);"></div>
+            System Online - 100k Cap
+        </div>
+    </header>
+
+    <main>
+        <div class="map-container">
+            <div class="glass-panel">
+                <h2><ion-icon name="map"></ion-icon> Predictive Crowd Map (Mock LiDAR)</h2>
+                <div class="gates-overview">
+                    <div class="gate-card" id="gate-a">
+                        <div class="gate-name">Gate A Arrivals</div>
+                        <div class="density-meter">
+                            <div class="density-fill" id="fill-a"></div>
+                        </div>
+                        <div class="density-label" id="label-a">30%</div>
+                    </div>
+                    <div class="gate-card" id="gate-b">
+                        <div class="gate-name">Gate B Arrivals</div>
+                        <div class="density-meter">
+                            <div class="density-fill" id="fill-b" style="width: 20%;"></div>
+                        </div>
+                        <div class="density-label" id="label-b" style="color:var(--success)">20%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <h2><ion-icon name="flash"></ion-icon> Activity Feed</h2>
+                <div id="activity-feed">
+                    <div class="notification">
+                        <ion-icon name="information-circle" style="font-size:24px;color:var(--success);"></ion-icon>
+                        <div>
+                            <strong>System:</strong> Baseline crowd flow initialized.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="glass-panel">
+                <h2><ion-icon name="gift"></ion-icon> Micro-Incentive Engine</h2>
+                <p style="font-size:14px; opacity:0.8;">Automatically issues Early-Bird Vouchers via Firebase when critical density is predicted.</p>
+                <div id="voucher-status">
+                    <div class="notification" style="background: rgba(102,252,241,0.1); border-color: var(--accent-primary);">
+                        <ion-icon name="ticket" style="font-size:24px;color:var(--accent-primary);"></ion-icon>
+                        <div>Waiting for congestion triggers...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel queue-widget">
+                <h2><ion-icon name="scan-circle"></ion-icon> Virtual Queue API</h2>
+                <p style="font-size:14px; opacity:0.8;">Secure concessions. Avoid the line.</p>
+                <div class="qr-placeholder" id="qr-display">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=KineticVenueQueueID:123" alt="QR Code">
+                </div>
+                <h3 id="queue-time" style="display:none; color:var(--accent-primary); margin:10px 0;">Pickup at: 19:45</h3>
+                <button class="btn" id="btn-queue" onclick="requestQueue()">
+                    <ion-icon name="add-circle-outline"></ion-icon> Request Time Slot
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mock Real-time Firebase Synchronization & LiDAR processing
+        const state = {
+            gateA: 30,
+            gateB: 20,
+            simulatingError: false
+        };
+
+        const colors = {
+            success: '#2ecc71',
+            warning: '#f1c40f',
+            danger: '#ff4c4c'
+        };
+
+        function addActivity(msg, isAlert = false) {
+            const feed = document.getElementById('activity-feed');
+            const el = document.createElement('div');
+            el.className = `notification ${isAlert ? 'alert' : ''}`;
+            
+            const iconName = isAlert ? 'warning' : 'information-circle';
+            const color = isAlert ? colors.danger : colors.success;
+
+            el.innerHTML = `
+                <ion-icon name="${iconName}" style="font-size:24px;color:${color};"></ion-icon>
+                <div><strong>${isAlert?'Alert':'System'}:</strong> ${msg}</div>
+            `;
+            feed.prepend(el);
+            if(feed.children.length > 3) feed.lastChild.remove();
+        }
+
+        function triggerIncentive() {
+            const status = document.getElementById('voucher-status');
+            status.innerHTML = `
+                <div class="notification alert" style="background:rgba(241,196,15,0.1); border-color:var(--warning);">
+                    <ion-icon name="star" style="font-size:24px;color:var(--warning);"></ion-icon>
+                    <div>
+                        <strong>Incentive Dispatched!</strong><br>
+                        "20% off drinks if you route to Gate B."
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateUI() {
+            // Update Gate A
+            const fillA = document.getElementById('fill-a');
+            const labelA = document.getElementById('label-a');
+            const cardA = document.getElementById('gate-a');
+            fillA.style.width = state.gateA + '%';
+            labelA.innerText = Math.floor(state.gateA) + '%';
+            
+            if(state.gateA > 85) {
+                fillA.style.backgroundColor = colors.danger;
+                labelA.style.color = colors.danger;
+                cardA.classList.add('pulse');
+                if(!state.simulatingError) {
+                    addActivity("Critical bottleneck predicted at Gate A!", true);
+                    triggerIncentive();
+                    state.simulatingError = true; // prevent spam
+                }
+            } else if (state.gateA > 60) {
+                fillA.style.backgroundColor = colors.warning;
+                labelA.style.color = colors.warning;
+                cardA.classList.remove('pulse');
+            } else {
+                fillA.style.backgroundColor = colors.success;
+                labelA.style.color = colors.success;
+                cardA.classList.remove('pulse');
+            }
+
+            // Update Gate B
+            const fillB = document.getElementById('fill-b');
+            const labelB = document.getElementById('label-b');
+            fillB.style.width = state.gateB + '%';
+            labelB.innerText = Math.floor(state.gateB) + '%';
+            fillB.style.backgroundColor = state.gateB > 60 ? colors.warning : colors.success;
+            labelB.style.color = state.gateB > 60 ? colors.warning : colors.success;
+        }
+
+        function simulateNetwork() {
+            // Fluctuate densities
+            if(state.gateA < 90 && !state.simulatingError) {
+                state.gateA += Math.random() * 5;
+            }
+            if(state.simulatingError && state.gateA > 50) {
+                // People are shifting to Gate B because of the incentive
+                state.gateA -= Math.random() * 6;
+                state.gateB += Math.random() * 4;
+            }
+            if(state.simulatingError && state.gateA <= 50) {
+                addActivity("Density at Gate A stabilized.");
+                state.simulatingError = false;
+                document.getElementById('voucher-status').innerHTML = `
+                    <div class="notification" style="background: rgba(102,252,241,0.1); border-color: var(--accent-primary);">
+                        <ion-icon name="checkmark-circle" style="font-size:24px;color:var(--accent-primary);"></ion-icon>
+                        <div>Voucher campaign ended. Flow stabilized.</div>
+                    </div>
+                `;
+            }
+            updateUI();
+        }
+
+        // Run simulation loop every 2 seconds
+        setInterval(simulateNetwork, 2000);
+
+        function requestQueue() {
+            const btn = document.getElementById('btn-queue');
+            btn.innerHTML = '<ion-icon name="sync" class="pulse"></ion-icon> Processing...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                document.getElementById('qr-display').style.display = 'flex';
+                document.getElementById('queue-time').style.display = 'block';
+                btn.innerHTML = '<ion-icon name="checkmark"></ion-icon> Slot Confirmed';
+                btn.style.background = 'var(--success)';
+                btn.style.borderColor = 'var(--success)';
+                btn.style.color = '#fff';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
