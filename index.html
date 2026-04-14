@@ -3,467 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KINETIC VENUE | Smart Stadium Control</title>
-    <meta name="description" content="Predictive crowd mapping and micro-incentive engine for stadium management.">
+    <title>ANTI-GRAV PROPULSION | Resonance Controller</title>
     
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Ionicons for Icons -->
+    <!-- Ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
     <style>
         :root {
-            --bg-color: #0b0c10;
-            --surface-color: rgba(31, 40, 51, 0.7);
-            --border-color: rgba(102, 252, 241, 0.2);
-            --accent-primary: #66fcf1;
-            --accent-secondary: #45a29e;
-            --text-main: #c5c6c7;
+            --bg-color: #050b14;
+            --surface-color: rgba(16, 25, 38, 0.7);
+            --border-color: rgba(100, 200, 255, 0.2);
+            --accent-primary: #00e5ff;
+            --accent-secondary: #0077ff;
+            --text-main: #a9b9c9;
             --text-heading: #ffffff;
-            --danger: #ff4c4c;
-            --warning: #f1c40f;
-            --success: #2ecc71;
-            
-            --glass-blur: blur(15px);
+            --danger: #ff2a55;
+            --warning: #ffb400;
+            --success: #00ff88;
+            --glass-blur: blur(20px);
         }
 
         body {
             margin: 0;
             padding: 0;
             font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, var(--bg-color) 0%, #171c28 100%);
+            background: radial-gradient(circle at center, var(--bg-color) 0%, #020408 100%);
             color: var(--text-main);
             min-height: 100vh;
-            overflow-x: hidden;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Abstract Background Elements */
-        .bg-orb {
+        /* Abstract Field Elements */
+        .resonance-field {
             position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px; height: 800px;
             border-radius: 50%;
-            filter: blur(80px);
+            border: 1px solid rgba(0, 229, 255, 0.05);
+            box-shadow: 0 0 150px rgba(0, 119, 255, 0.1);
             z-index: 0;
-            opacity: 0.4;
+            animation: spin 30s linear infinite;
+            pointer-events: none;
         }
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: var(--accent-secondary);
-            top: -100px;
-            left: -100px;
-            animation: float 10s ease-in-out infinite;
-        }
-        .orb-2 {
-            width: 300px;
-            height: 300px;
-            background: rgba(102, 252, 241, 0.4);
-            bottom: -50px;
-            right: -50px;
-            animation: float 12s ease-in-out infinite reverse;
+        .resonance-field::before {
+            content: ''; position: absolute;
+            top: 100px; left: 100px; right: 100px; bottom: 100px;
+            border: 1px dashed rgba(0, 255, 136, 0.1);
+            border-radius: 50%;
+            animation: spin 20s linear infinite reverse;
         }
 
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(30px, 40px); }
-            100% { transform: translate(0, 0); }
-        }
+        @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
         /* Header */
         header {
-            position: relative;
-            z-index: 10;
+            position: relative; z-index: 10;
             padding: 24px 48px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5, 11, 20, 0.8);
             border-bottom: 1px solid var(--border-color);
-            background: rgba(11, 12, 16, 0.8);
             backdrop-filter: var(--glass-blur);
         }
         header h1 {
-            margin: 0;
-            color: var(--accent-primary);
-            font-weight: 800;
-            letter-spacing: 2px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            margin: 0; font-weight: 800; font-size: 24px;
+            color: var(--accent-primary); letter-spacing: 2px;
+            display: flex; align-items: center; gap: 12px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
         }
-        
+
         /* Main Layout */
         main {
-            position: relative;
-            z-index: 10;
-            flex: 1;
-            padding: 40px 48px;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 32px;
+            position: relative; z-index: 10;
+            flex: 1; padding: 40px 48px;
+            display: grid; grid-template-columns: 2fr 1fr; gap: 32px;
         }
 
         .glass-panel {
             background: var(--surface-color);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 16px; padding: 24px;
             backdrop-filter: var(--glass-blur);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-        .glass-panel:hover {
-            transform: translateY(-5px);
-            border-color: rgba(102, 252, 241, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
         }
 
         h2 {
-            color: var(--text-heading);
-            font-weight: 600;
-            margin-top: 0;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: var(--text-heading); font-size: 18px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px; margin-top: 0;
+            display: flex; align-items: center; gap: 10px;
         }
 
-        /* Crowd Map UI */
-        .map-container {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+        /* Data Readouts */
+        .telemetry-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;
         }
-        .gates-overview {
-            display: flex;
-            gap: 20px;
-            justify-content: space-between;
+        .data-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px; padding: 20px;
         }
-        .gate-card {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
+        .data-label {
+            font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-primary);
         }
-        .gate-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at center, rgba(102,252,241,0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
+        .data-value {
+            font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700;
+            color: var(--text-heading); margin-top: 10px;
         }
-        .gate-card:hover::before { opacity: 1; }
 
-        .gate-name {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--text-heading);
-        }
-        .density-meter {
-            height: 10px;
-            background: #2a2a2a;
-            border-radius: 5px;
-            margin: 15px 0;
-            overflow: hidden;
+        .drift-meter {
+            height: 6px; background: #111; border-radius: 3px; margin-top: 15px; overflow: hidden;
             position: relative;
         }
-        .density-fill {
-            height: 100%;
-            width: 30%;
-            background: var(--success);
-            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s ease;
-        }
-        .density-label {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--success);
-        }
-        
-        .pulse {
-            animation: pulse-ring 2s infinite;
+        .drift-indicator {
+            height: 100%; width: 50%; background: var(--success);
+            transition: all 0.3s ease; position: relative; left: 25%;
         }
 
-        @keyframes pulse-ring {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 76, 76, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 76, 76, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 76, 76, 0); }
+        /* Status Module */
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px; border-radius: 20px; font-weight: 600;
+            font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .status-efficient { background: rgba(0, 255, 136, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .status-active { background: rgba(255, 180, 0, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+        .status-danger { background: rgba(255, 42, 85, 0.1); color: var(--danger); border: 1px solid var(--danger); animation: pulse-danger 1s infinite; }
+
+        @keyframes pulse-danger {
+            0% { box-shadow: 0 0 0 0 rgba(255, 42, 85, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 42, 85, 0); }
         }
 
-        /* Incentives & Queue Sidebar */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
+        /* Console */
+        .console-log {
+            font-family: 'Space Mono', monospace; font-size: 13px;
+            background: #000; border: 1px solid #222; border-radius: 8px;
+            padding: 15px; height: 250px; overflow-y: auto;
+            color: var(--text-main); margin-top: 20px;
         }
+        .log-entry { margin-bottom: 8px; }
+        .log-time { color: #555; }
+        .log-warn { color: var(--warning); }
+        .log-crit { color: var(--danger); font-weight: bold; }
+        .log-succ { color: var(--success); }
 
-        .notification {
-            background: rgba(46, 204, 113, 0.1);
-            border-left: 4px solid var(--success);
-            padding: 16px;
-            border-radius: 0 10px 10px 0;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            animation: slideIn 0.5s ease-out;
+        .btn-spoof {
+            background: transparent; color: var(--danger); border: 1px solid var(--danger);
+            padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: 'Space Mono';
+            margin-top: 15px; width: 100%; transition: 0.3s;
         }
-        .notification.alert {
-            background: rgba(255, 76, 76, 0.1);
-            border-left-color: var(--danger);
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(50px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Virtual Queue */
-        .queue-widget {
-            text-align: center;
-        }
-        .btn {
-            background: transparent;
-            border: 2px solid var(--accent-primary);
-            color: var(--accent-primary);
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 15px;
-        }
-        .btn:hover {
-            background: var(--accent-primary);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px var(--accent-primary);
-        }
-        .qr-placeholder {
-            width: 150px;
-            height: 150px;
-            background: #fff;
-            border-radius: 10px;
-            margin: 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            display: none;
-            overflow: hidden;
-        }
-        .qr-placeholder img { width: 100%; height: 100%; object-fit: contain; }
-
-        @media (max-width: 900px) {
-            main { grid-template-columns: 1fr; }
-        }
+        .btn-spoof:hover { background: rgba(255, 42, 85, 0.2); }
     </style>
 </head>
 <body>
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
+
+    <div class="resonance-field"></div>
 
     <header>
-        <h1><ion-icon name="pulse"></ion-icon> KINETIC VENUE</h1>
-        <div style="font-size: 14px; opacity: 0.8; display:flex; align-items:center; gap:8px;">
-            <div style="width:10px;height:10px;border-radius:50%;background:var(--success);box-shadow:0 0 5px var(--success);"></div>
-            System Online - 100k Cap
-        </div>
+        <h1><ion-icon name="planet-outline"></ion-icon> RESONANCE CONTROLLER</h1>
+        <div><span id="system-mode" class="status-badge status-efficient"><ion-icon name="leaf"></ion-icon> Low-Latency / High-Efficiency</span></div>
     </header>
 
     <main>
-        <div class="map-container">
-            <div class="glass-panel">
-                <h2><ion-icon name="map"></ion-icon> Predictive Crowd Map (Mock LiDAR)</h2>
-                <div class="gates-overview">
-                    <div class="gate-card" id="gate-a">
-                        <div class="gate-name">Gate A Arrivals</div>
-                        <div class="density-meter">
-                            <div class="density-fill" id="fill-a"></div>
-                        </div>
-                        <div class="density-label" id="label-a">30%</div>
-                    </div>
-                    <div class="gate-card" id="gate-b">
-                        <div class="gate-name">Gate B Arrivals</div>
-                        <div class="density-meter">
-                            <div class="density-fill" id="fill-b" style="width: 20%;"></div>
-                        </div>
-                        <div class="density-label" id="label-b" style="color:var(--success)">20%</div>
-                    </div>
+        <div class="glass-panel">
+            <h2><ion-icon name="speedometer"></ion-icon> Primary Telemetry (Sub-5ms Cycles)</h2>
+            <div class="telemetry-grid">
+                <div class="data-card">
+                    <div class="data-label">G-Sensor Resonance</div>
+                    <div class="data-value" id="g-value">9.80000 <span style="font-size:16px;color:#555">m/s²</span></div>
+                    <div class="drift-meter"><div class="drift-indicator" id="g-drift"></div></div>
                 </div>
-            </div>
-
-            <div class="glass-panel">
-                <h2><ion-icon name="flash"></ion-icon> Activity Feed</h2>
-                <div id="activity-feed">
-                    <div class="notification">
-                        <ion-icon name="information-circle" style="font-size:24px;color:var(--success);"></ion-icon>
-                        <div>
-                            <strong>System:</strong> Baseline crowd flow initialized.
-                        </div>
-                    </div>
+                <div class="data-card">
+                    <div class="data-label">Stability Drift</div>
+                    <div class="data-value" id="drift-value">0.0000 <span style="font-size:16px;color:#555">%</span></div>
+                </div>
+                <div class="data-card">
+                    <div class="data-label">Altimeter</div>
+                    <div class="data-value" id="alt-value">12000.00 <span style="font-size:16px;color:#555">m</span></div>
+                </div>
+                <div class="data-card">
+                    <div class="data-label">Atmos. Pressure</div>
+                    <div class="data-value" id="press-value">19.30 <span style="font-size:16px;color:#555">kPa</span></div>
                 </div>
             </div>
         </div>
 
-        <div class="sidebar">
-            <div class="glass-panel">
-                <h2><ion-icon name="gift"></ion-icon> Micro-Incentive Engine</h2>
-                <p style="font-size:14px; opacity:0.8;">Automatically issues Early-Bird Vouchers via Firebase when critical density is predicted.</p>
-                <div id="voucher-status">
-                    <div class="notification" style="background: rgba(102,252,241,0.1); border-color: var(--accent-primary);">
-                        <ion-icon name="ticket" style="font-size:24px;color:var(--accent-primary);"></ion-icon>
-                        <div>Waiting for congestion triggers...</div>
-                    </div>
-                </div>
-            </div>
+        <div class="glass-panel">
+            <h2><ion-icon name="lock-closed"></ion-icon> Security & Actions</h2>
+            <p style="font-size: 14px;">Real-time analysis against sensor spoofing. Encrypts command logs if Auto-Leveling triggers.</p>
+            
+            <button class="btn-spoof" onclick="injectSpoof()"><ion-icon name="warning"></ion-icon> INJECT SENSOR SPOOF</button>
 
-            <div class="glass-panel queue-widget">
-                <h2><ion-icon name="scan-circle"></ion-icon> Virtual Queue API</h2>
-                <p style="font-size:14px; opacity:0.8;">Secure concessions. Avoid the line.</p>
-                <div class="qr-placeholder" id="qr-display">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=KineticVenueQueueID:123" alt="QR Code">
-                </div>
-                <h3 id="queue-time" style="display:none; color:var(--accent-primary); margin:10px 0;">Pickup at: 19:45</h3>
-                <button class="btn" id="btn-queue" onclick="requestQueue()">
-                    <ion-icon name="add-circle-outline"></ion-icon> Request Time Slot
-                </button>
+            <div class="console-log" id="console">
+                <div class="log-entry"><span class="log-time">00:00:00.000</span> <span class="log-succ">System Initialized. Baseline nominal.</span></div>
             </div>
         </div>
     </main>
 
     <script>
-        // Mock Real-time Firebase Synchronization & LiDAR processing
-        const state = {
-            gateA: 30,
-            gateB: 20,
-            simulatingError: false
-        };
-
-        const colors = {
-            success: '#2ecc71',
-            warning: '#f1c40f',
-            danger: '#ff4c4c'
-        };
-
-        function addActivity(msg, isAlert = false) {
-            const feed = document.getElementById('activity-feed');
-            const el = document.createElement('div');
-            el.className = `notification ${isAlert ? 'alert' : ''}`;
-            
-            const iconName = isAlert ? 'warning' : 'information-circle';
-            const color = isAlert ? colors.danger : colors.success;
-
-            el.innerHTML = `
-                <ion-icon name="${iconName}" style="font-size:24px;color:${color};"></ion-icon>
-                <div><strong>${isAlert?'Alert':'System'}:</strong> ${msg}</div>
-            `;
-            feed.prepend(el);
-            if(feed.children.length > 3) feed.lastChild.remove();
+        let baseline = 9.80000;
+        let currentG = 9.80000;
+        let isLocked = false;
+        
+        const consoleEl = document.getElementById('console');
+        
+        function log(msg, type="succ") {
+            const time = new Date().toISOString().substring(11, 23);
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">${time}</span> <span class="log-${type}">${msg}</span>`;
+            consoleEl.prepend(entry);
+            if(consoleEl.children.length > 20) consoleEl.lastChild.remove();
         }
 
-        function triggerIncentive() {
-            const status = document.getElementById('voucher-status');
-            status.innerHTML = `
-                <div class="notification alert" style="background:rgba(241,196,15,0.1); border-color:var(--warning);">
-                    <ion-icon name="star" style="font-size:24px;color:var(--warning);"></ion-icon>
-                    <div>
-                        <strong>Incentive Dispatched!</strong><br>
-                        "20% off drinks if you route to Gate B."
-                    </div>
-                </div>
-            `;
-        }
-
-        function updateUI() {
-            // Update Gate A
-            const fillA = document.getElementById('fill-a');
-            const labelA = document.getElementById('label-a');
-            const cardA = document.getElementById('gate-a');
-            fillA.style.width = state.gateA + '%';
-            labelA.innerText = Math.floor(state.gateA) + '%';
+        function updateUI(driftPct) {
+            document.getElementById('g-value').innerHTML = `${currentG.toFixed(5)} <span style="font-size:16px;color:#555">m/s²</span>`;
+            document.getElementById('drift-value').innerHTML = `${driftPct.toFixed(4)} <span style="font-size:16px;color:#555">%</span>`;
             
-            if(state.gateA > 85) {
-                fillA.style.backgroundColor = colors.danger;
-                labelA.style.color = colors.danger;
-                cardA.classList.add('pulse');
-                if(!state.simulatingError) {
-                    addActivity("Critical bottleneck predicted at Gate A!", true);
-                    triggerIncentive();
-                    state.simulatingError = true; // prevent spam
-                }
-            } else if (state.gateA > 60) {
-                fillA.style.backgroundColor = colors.warning;
-                labelA.style.color = colors.warning;
-                cardA.classList.remove('pulse');
+            const modeEl = document.getElementById('system-mode');
+            const gDrift = document.getElementById('g-drift');
+            
+            // Visual Drift indicator mapping
+            gDrift.style.width = Math.min(100, 50 + (driftPct * 100)) + '%';
+
+            if(isLocked) {
+                modeEl.className = 'status-badge status-danger';
+                modeEl.innerHTML = '<ion-icon name="shield"></ion-icon> AUTO-LEVELING MODE';
+                gDrift.style.background = 'var(--danger)';
+            } else if (driftPct > 0.001) {
+                modeEl.className = 'status-badge status-active';
+                modeEl.innerHTML = '<ion-icon name="construct"></ion-icon> ACTIVE CALIBRATION';
+                gDrift.style.background = 'var(--warning)';
             } else {
-                fillA.style.backgroundColor = colors.success;
-                labelA.style.color = colors.success;
-                cardA.classList.remove('pulse');
+                modeEl.className = 'status-badge status-efficient';
+                modeEl.innerHTML = '<ion-icon name="leaf"></ion-icon> HIGH-EFFICIENCY ROUTINE';
+                gDrift.style.background = 'var(--success)';
             }
-
-            // Update Gate B
-            const fillB = document.getElementById('fill-b');
-            const labelB = document.getElementById('label-b');
-            fillB.style.width = state.gateB + '%';
-            labelB.innerText = Math.floor(state.gateB) + '%';
-            fillB.style.backgroundColor = state.gateB > 60 ? colors.warning : colors.success;
-            labelB.style.color = state.gateB > 60 ? colors.warning : colors.success;
         }
 
-        function simulateNetwork() {
-            // Fluctuate densities
-            if(state.gateA < 90 && !state.simulatingError) {
-                state.gateA += Math.random() * 5;
-            }
-            if(state.simulatingError && state.gateA > 50) {
-                // People are shifting to Gate B because of the incentive
-                state.gateA -= Math.random() * 6;
-                state.gateB += Math.random() * 4;
-            }
-            if(state.simulatingError && state.gateA <= 50) {
-                addActivity("Density at Gate A stabilized.");
-                state.simulatingError = false;
-                document.getElementById('voucher-status').innerHTML = `
-                    <div class="notification" style="background: rgba(102,252,241,0.1); border-color: var(--accent-primary);">
-                        <ion-icon name="checkmark-circle" style="font-size:24px;color:var(--accent-primary);"></ion-icon>
-                        <div>Voucher campaign ended. Flow stabilized.</div>
-                    </div>
-                `;
-            }
-            updateUI();
+        function injectSpoof() {
+            log("EXTERNAL INTRUSION: G-Sensor anomaly detected!", "crit");
+            currentG = 15.3421; // Massive fake spike
+            processTelemetry();
         }
 
-        // Run simulation loop every 2 seconds
-        setInterval(simulateNetwork, 2000);
+        function processTelemetry() {
+            if(isLocked) {
+                // Return to baseline rapidly
+                currentG = baseline;
+                const drift = 0;
+                updateUI(drift);
+                setTimeout(() => {
+                    isLocked = false;
+                    log("Secured. Auto-Leveling disengaged. Logs Encrypted: " + btoa(Math.random()), "succ");
+                }, 3000);
+                return;
+            }
 
-        function requestQueue() {
-            const btn = document.getElementById('btn-queue');
-            btn.innerHTML = '<ion-icon name="sync" class="pulse"></ion-icon> Processing...';
-            btn.disabled = true;
+            // Normal flux
+            currentG += (Math.random() - 0.5) * 0.0004;
+            let drift = Math.abs(currentG - baseline);
+            let driftPct = (drift / baseline) * 100;
+
+            if(driftPct > 5.0) {
+                isLocked = true;
+                log("DRIFT > 5%. SECURITY PROTOCOL ACTIVATED. Forcing Auto-Level.", "crit");
+            } else if (driftPct > 0.001) {
+                // Apply inverse modulation
+                let inverse = baseline - currentG;
+                currentG += inverse; // Instantly fix
+                log(`Drift ${driftPct.toFixed(4)}%. Applying inverse modulation: ${inverse > 0 ? '+':''}${inverse.toFixed(5)} m/s²`, "warn");
+            }
+
+            // Random altitude flux
+            document.getElementById('alt-value').innerHTML = `${(12000 + (Math.random()*2 - 1)).toFixed(2)} <span style="font-size:16px;color:#555">m</span>`;
             
-            setTimeout(() => {
-                document.getElementById('qr-display').style.display = 'flex';
-                document.getElementById('queue-time').style.display = 'block';
-                btn.innerHTML = '<ion-icon name="checkmark"></ion-icon> Slot Confirmed';
-                btn.style.background = 'var(--success)';
-                btn.style.borderColor = 'var(--success)';
-                btn.style.color = '#fff';
-            }, 1000);
+            updateUI(driftPct);
         }
+
+        // Sub-5ms loop visual approximation (Using 100ms for browser stability)
+        setInterval(processTelemetry, 100);
     </script>
 </body>
 </html>
